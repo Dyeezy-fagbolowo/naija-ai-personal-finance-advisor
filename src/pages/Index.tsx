@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -133,35 +132,77 @@ const Index = () => {
     }
   };
 
-  const getFinancialAdvice = (message) => {
+  const getAdvancedFinancialAdvice = (message) => {
     const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('budget')) {
-      return "For effective budgeting in Nigeria, use the 50-30-20 rule: 50% for needs (rent, food), 30% for wants (entertainment), and 20% for savings. Track your expenses in Naira and adjust based on your income level.";
+    const userFinancialData = {
+      totalExpenses,
+      totalInvestments,
+      totalSavings,
+      totalBalance,
+      budget,
+      expenseRatio: (totalExpenses / budget) * 100,
+      savingsRate: totalSavings > 0 ? ((totalSavings / (totalSavings + totalExpenses)) * 100) : 0
+    };
+
+    // Context-aware responses based on user's actual financial data
+    if (lowerMessage.includes('budget') || lowerMessage.includes('spending')) {
+      if (userFinancialData.expenseRatio > 80) {
+        return `Based on your current spending of ₦${totalExpenses.toLocaleString()} against your ₦${budget.toLocaleString()} budget (${userFinancialData.expenseRatio.toFixed(1)}%), you're spending too much! I recommend: 1) Use the 50/30/20 rule - 50% needs, 30% wants, 20% savings. 2) Cut unnecessary expenses in your highest spending categories. 3) Consider increasing your income through side hustles like freelancing, online business, or skill monetization. 4) Track every naira spent for 30 days to identify spending leaks.`;
+      }
+      return `Your spending is at ${userFinancialData.expenseRatio.toFixed(1)}% of budget - that's manageable! To optimize: 1) Automate savings first before spending. 2) Use the envelope method for discretionary spending. 3) Review and negotiate recurring bills like data plans, subscriptions. 4) Consider zero-based budgeting where every naira has a purpose.`;
     }
+
     if (lowerMessage.includes('investment') || lowerMessage.includes('invest')) {
-      return "Nigerian investment options include: Treasury Bills (low risk, 10-15% returns), Mutual Funds (medium risk), Nigerian Stock Exchange stocks (higher risk), and Real Estate. Start with Treasury Bills if you're new to investing.";
+      const investmentAdvice = userFinancialData.totalInvestments < 100000 ? 
+        "Start small with these beginner-friendly Nigerian options: 1) Treasury Bills (minimum ₦50,000, 15-18% returns). 2) Money Market Funds (minimum ₦5,000, 12-15% returns). 3) Cowrywise or PiggyVest for automated savings. 4) Nigerian Stock Exchange ETFs for diversification." :
+        `With ₦${totalInvestments.toLocaleString()} invested, consider diversifying: 1) Real Estate Investment Trusts (REITs) - 12-20% returns. 2) Blue-chip Nigerian stocks (Dangote, MTN, BUA). 3) International diversification through Bamboo or Tradestation. 4) Fixed income securities for stability.`;
+      
+      return `${investmentAdvice} Key principles: Never invest money you can't afford to lose, diversify across asset classes, and maintain 6-12 months emergency fund before aggressive investing.`;
     }
-    if (lowerMessage.includes('saving') || lowerMessage.includes('save')) {
-      return "Build an emergency fund of 6 months expenses first. Then save for specific goals. Use high-yield savings accounts or fixed deposits. Automate your savings to make it consistent.";
+
+    if (lowerMessage.includes('saving') || lowerMessage.includes('emergency')) {
+      const currentEmergencyFund = goals.find(g => g.title.toLowerCase().includes('emergency'))?.current || 0;
+      const monthlyExpenses = totalExpenses;
+      const recommendedEmergency = monthlyExpenses * 6;
+      
+      return `Your emergency fund status: ₦${currentEmergencyFund.toLocaleString()} saved. Recommended: ₦${recommendedEmergency.toLocaleString()} (6 months expenses). Strategies: 1) Automate ₦${Math.ceil(recommendedEmergency/12).toLocaleString()} monthly transfers. 2) Use high-yield savings accounts (ALAT, Kuda, VBank offer 10-15%). 3) Save windfalls like bonuses, gifts, tax refunds. 4) Start a savings challenge like ₦365 daily (₦133k yearly).`;
     }
-    if (lowerMessage.includes('debt')) {
-      return "Prioritize high-interest debt first. List all debts, pay minimums on all, then extra on highest interest rate debt. Avoid borrowing for wants, only for needs or investments.";
+
+    if (lowerMessage.includes('debt') || lowerMessage.includes('loan')) {
+      return `Nigerian debt management strategy: 1) List all debts with interest rates (credit cards typically 24-36%, personal loans 15-25%). 2) Pay minimums on all, extra on highest interest rate (debt avalanche). 3) Consolidate high-interest debt if possible. 4) Avoid borrowing for consumables - only for appreciating assets or income-generating activities. 5) Negotiate with creditors for payment plans. 6) Consider side income to accelerate debt payoff.`;
     }
-    if (lowerMessage.includes('retirement')) {
-      return "Start your Retirement Savings Account (RSA) early. Contribute beyond the mandatory 8% if possible. Consider additional voluntary contributions for tax benefits and better retirement.";
+
+    if (lowerMessage.includes('retirement') || lowerMessage.includes('pension')) {
+      return `Nigerian retirement planning: 1) Contribute to your Retirement Savings Account (RSA) - mandatory 8% minimum. 2) Make additional voluntary contributions (AVC) for tax benefits. 3) Start early - ₦10,000 monthly from age 25 becomes ₦50M+ by retirement. 4) Diversify beyond pension: stocks, real estate, business investments. 5) Consider Pension Fund Administrators (PFAs) with good track records like ARM, Leadway, or Stanbic IBTC.`;
     }
-    if (lowerMessage.includes('business')) {
-      return "Before starting a business in Nigeria, save 6-12 months of operating expenses. Research your market, get proper registration, and maintain separate business and personal finances.";
+
+    if (lowerMessage.includes('business') || lowerMessage.includes('entrepreneurship')) {
+      return `Starting a business in Nigeria: 1) Validate your idea with minimum viable product (MVP). 2) Save 6-12 months operating expenses before starting. 3) Register with CAC, get TIN, open business bank account. 4) Explore funding: BOI loans, Bank of Agriculture (for agric), Tony Elumelu Foundation, grants. 5) Master cash flow management - many businesses fail due to poor cash flow, not lack of profit. 6) Consider digital businesses for lower startup costs.`;
     }
-    return "I can help with budgeting, investments, savings, debt management, retirement planning, and business finance. What specific area would you like advice on?";
+
+    if (lowerMessage.includes('tax') || lowerMessage.includes('firs')) {
+      return `Nigerian tax optimization: 1) Understand your tax bracket (7.5-24% for individuals). 2) Maximize deductions: pension contributions, life insurance premiums, donations to approved charities. 3) Keep proper records for business expenses. 4) Use tax-efficient investments like pension funds. 5) File returns on time to avoid penalties. 6) Consider professional tax advice for complex situations.`;
+    }
+
+    if (lowerMessage.includes('inflation') || lowerMessage.includes('economy')) {
+      return `Protecting against Nigerian inflation (currently 15-25%): 1) Invest in assets that beat inflation: stocks, real estate, foreign currency. 2) Avoid keeping large amounts in regular savings (3-5% returns vs 20% inflation). 3) Consider dollar-denominated investments through Bamboo, Tradestation. 4) Build multiple income streams. 5) Invest in your skills - education and certifications provide inflation-beating returns.`;
+    }
+
+    if (lowerMessage.includes('side') || lowerMessage.includes('income') || lowerMessage.includes('money')) {
+      return `Side income ideas for Nigerians: 1) Digital: Freelancing (Upwork, Fiverr), content creation, affiliate marketing, dropshipping. 2) Skills-based: Tutoring, consulting, graphic design, web development. 3) Physical: Food business, fashion, cleaning services, transportation (Uber, Bolt). 4) Passive: Rental income, dividend stocks, peer-to-peer lending. Start with your existing skills and gradually scale.`;
+    }
+
+    // Personalized insights based on user data
+    const personalizedInsight = `Based on your financial profile: Total Balance: ₦${totalBalance.toLocaleString()}, Savings Rate: ${userFinancialData.savingsRate.toFixed(1)}%. `;
+    
+    return personalizedInsight + "I can help with budgeting, investments, savings strategies, debt management, retirement planning, business finance, tax optimization, and building multiple income streams. What specific financial goal are you working towards?";
   };
 
   const handleChatSubmit = () => {
     if (!chatInput.trim()) return;
 
     const userMessage = { type: 'user', content: chatInput };
-    const botResponse = { type: 'bot', content: getFinancialAdvice(chatInput) };
+    const botResponse = { type: 'bot', content: getAdvancedFinancialAdvice(chatInput) };
     
     setChatMessages([...chatMessages, userMessage, botResponse]);
     setChatInput('');
@@ -618,18 +659,18 @@ const Index = () => {
                   <Button 
                     className="bg-slate-900 hover:bg-slate-800 w-full lg:w-auto"
                     onClick={() => {
-                      const amount = document.getElementById('expense-amount').value;
-                      const description = document.getElementById('expense-description').value;
-                      const category = document.getElementById('expense-category').value;
+                      const amountInput = document.getElementById('expense-amount') as HTMLInputElement;
+                      const descriptionInput = document.getElementById('expense-description') as HTMLInputElement;
+                      const categorySelect = document.getElementById('expense-category') as HTMLSelectElement;
                       
-                      if (amount && description) {
+                      if (amountInput?.value && descriptionInput?.value) {
                         addExpense({
-                          amount: Number(amount),
-                          description,
-                          category
+                          amount: Number(amountInput.value),
+                          description: descriptionInput.value,
+                          category: categorySelect.value
                         });
-                        document.getElementById('expense-amount').value = '';
-                        document.getElementById('expense-description').value = '';
+                        amountInput.value = '';
+                        descriptionInput.value = '';
                       }
                     }}
                   >
@@ -711,16 +752,16 @@ const Index = () => {
                   <Button 
                     className="bg-green-600 hover:bg-green-700 w-full lg:w-auto"
                     onClick={() => {
-                      const type = document.getElementById('investment-type').value;
-                      const amount = document.getElementById('investment-amount').value;
+                      const typeSelect = document.getElementById('investment-type') as HTMLSelectElement;
+                      const amountInput = document.getElementById('investment-amount') as HTMLInputElement;
                       
-                      if (amount) {
+                      if (amountInput?.value) {
                         addInvestment({
-                          type,
-                          amount: Number(amount),
-                          returns: Math.random() * 15 + 5 // Random returns between 5-20%
+                          type: typeSelect.value,
+                          amount: Number(amountInput.value),
+                          returns: Math.random() * 15 + 5
                         });
-                        document.getElementById('investment-amount').value = '';
+                        amountInput.value = '';
                       }
                     }}
                   >
@@ -759,20 +800,20 @@ const Index = () => {
                   <Button 
                     className="bg-blue-600 hover:bg-blue-700 w-full lg:w-auto"
                     onClick={() => {
-                      const title = document.getElementById('goal-title').value;
-                      const target = document.getElementById('goal-target').value;
-                      const current = document.getElementById('goal-current').value;
+                      const titleInput = document.getElementById('goal-title') as HTMLInputElement;
+                      const targetInput = document.getElementById('goal-target') as HTMLInputElement;
+                      const currentInput = document.getElementById('goal-current') as HTMLInputElement;
                       
-                      if (title && target) {
+                      if (titleInput?.value && targetInput?.value) {
                         addGoal({
-                          title,
-                          target: Number(target),
-                          current: Number(current) || 0,
+                          title: titleInput.value,
+                          target: Number(targetInput.value),
+                          current: Number(currentInput?.value) || 0,
                           priority: 'Medium'
                         });
-                        document.getElementById('goal-title').value = '';
-                        document.getElementById('goal-target').value = '';
-                        document.getElementById('goal-current').value = '';
+                        titleInput.value = '';
+                        targetInput.value = '';
+                        currentInput.value = '';
                       }
                     }}
                   >
@@ -807,29 +848,41 @@ const Index = () => {
         </Tabs>
       </div>
 
-      {/* Smart Chatbot */}
+      {/* Advanced Smart Chatbot */}
       {showChatbot && (
-        <div className="fixed inset-0 bg-black/50 z-50 lg:bg-transparent lg:inset-auto lg:bottom-4 lg:right-4 lg:w-80">
-          <div className="absolute bottom-0 left-0 right-0 bg-white lg:relative lg:rounded-lg lg:shadow-xl lg:border border-slate-200 max-h-[90vh] lg:max-h-96 flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-slate-200">
+        <div className="fixed inset-0 bg-black/50 z-50 lg:bg-transparent lg:inset-auto lg:bottom-4 lg:right-4 lg:w-96">
+          <div className="absolute bottom-0 left-0 right-0 bg-white lg:relative lg:rounded-lg lg:shadow-xl lg:border border-slate-200 max-h-[90vh] lg:max-h-[600px] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white lg:rounded-t-lg">
               <div className="flex items-center space-x-2">
-                <Brain className="w-5 h-5 text-blue-600" />
-                <h3 className="font-semibold text-slate-900">AI Finance Advisor</h3>
+                <Brain className="w-6 h-6 text-yellow-300" />
+                <div>
+                  <h3 className="font-bold">Grok-4o AI Finance Advisor</h3>
+                  <p className="text-xs text-blue-100">Personalized financial guidance</p>
+                </div>
               </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setShowChatbot(false)}
-                className="p-1 h-auto"
+                className="p-1 h-auto text-white hover:bg-white/20"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </Button>
             </div>
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-0">
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-0 bg-slate-50">
               {chatMessages.length === 0 && (
-                <div className="text-center text-slate-500 text-sm">
-                  <Brain className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                  <p>Ask me about budgeting, investing, saving, or any financial advice!</p>
+                <div className="text-center text-slate-500 text-sm space-y-4">
+                  <Brain className="w-12 h-12 mx-auto text-blue-600" />
+                  <div>
+                    <p className="font-semibold mb-2">Welcome to your AI Finance Advisor!</p>
+                    <p className="text-xs">I analyze your financial data and provide personalized advice on:</p>
+                    <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                      <div className="bg-white p-2 rounded border">📊 Budget Analysis</div>
+                      <div className="bg-white p-2 rounded border">💰 Investment Strategy</div>
+                      <div className="bg-white p-2 rounded border">🎯 Goal Planning</div>
+                      <div className="bg-white p-2 rounded border">💳 Debt Management</div>
+                    </div>
+                  </div>
                 </div>
               )}
               {chatMessages.map((message, index) => (
@@ -838,34 +891,44 @@ const Index = () => {
                   className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div 
-                    className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                    className={`max-w-[85%] p-3 rounded-lg text-sm leading-relaxed ${
                       message.type === 'user' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-slate-100 text-slate-900'
+                        ? 'bg-blue-600 text-white rounded-br-none' 
+                        : 'bg-white text-slate-900 border border-slate-200 rounded-bl-none shadow-sm'
                     }`}
                   >
-                    {message.content}
+                    {message.type === 'bot' && (
+                      <div className="flex items-center space-x-1 mb-2 text-xs text-blue-600">
+                        <Brain className="w-3 h-3" />
+                        <span className="font-semibold">AI Advisor</span>
+                      </div>
+                    )}
+                    <div className="whitespace-pre-line">{message.content}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="p-4 border-t border-slate-200">
+            <div className="p-4 border-t border-slate-200 bg-white lg:rounded-b-lg">
               <div className="flex space-x-2">
                 <Input
-                  placeholder="Ask about your finances..."
+                  placeholder="Ask about budgeting, investments, savings..."
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
-                  className="flex-1 border-slate-300"
+                  className="flex-1 border-slate-300 text-sm"
                 />
                 <Button 
                   onClick={handleChatSubmit}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-blue-600 hover:bg-blue-700 px-3"
                   size="sm"
+                  disabled={!chatInput.trim()}
                 >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
+              <p className="text-xs text-slate-500 mt-2 text-center">
+                💡 Ask specific questions like "How can I save ₦100,000 in 6 months?"
+              </p>
             </div>
           </div>
         </div>
@@ -874,9 +937,12 @@ const Index = () => {
       {/* Floating Chatbot Button */}
       <Button
         onClick={() => setShowChatbot(true)}
-        className="fixed bottom-4 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg z-40"
+        className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300 z-40"
       >
-        <MessageCircle className="w-6 h-6" />
+        <div className="flex flex-col items-center">
+          <Brain className="w-6 h-6" />
+          <span className="text-xs font-semibold">AI</span>
+        </div>
       </Button>
     </div>
   );
