@@ -132,81 +132,217 @@ const Index = () => {
     }
   };
 
-  const getAdvancedFinancialAdvice = (message) => {
-    const lowerMessage = message.toLowerCase();
-    const userFinancialData = {
-      totalExpenses,
-      totalInvestments,
-      totalSavings,
-      totalBalance,
-      budget,
-      expenseRatio: (totalExpenses / budget) * 100,
-      savingsRate: totalSavings > 0 ? ((totalSavings / (totalSavings + totalExpenses)) * 100) : 0
+  // const getAdvancedFinancialAdvice = (message) => {
+  //   const lowerMessage = message.toLowerCase();
+  //   const userFinancialData = {
+  //     totalExpenses,
+  //     totalInvestments,
+  //     totalSavings,
+  //     totalBalance,
+  //     budget,
+  //     expenseRatio: (totalExpenses / budget) * 100,
+  //     savingsRate: totalSavings > 0 ? ((totalSavings / (totalSavings + totalExpenses)) * 100) : 0
+  //   };
+
+  //   // Context-aware responses based on user's actual financial data
+  //   if (lowerMessage.includes('budget') || lowerMessage.includes('spending')) {
+  //     if (userFinancialData.expenseRatio > 80) {
+  //       return `Based on your current spending of ₦${totalExpenses.toLocaleString()} against your ₦${budget.toLocaleString()} budget (${userFinancialData.expenseRatio.toFixed(1)}%), you're spending too much! I recommend: 1) Use the 50/30/20 rule - 50% needs, 30% wants, 20% savings. 2) Cut unnecessary expenses in your highest spending categories. 3) Consider increasing your income through side hustles like freelancing, online business, or skill monetization. 4) Track every naira spent for 30 days to identify spending leaks.`;
+  //     }
+  //     return `Your spending is at ${userFinancialData.expenseRatio.toFixed(1)}% of budget - that's manageable! To optimize: 1) Automate savings first before spending. 2) Use the envelope method for discretionary spending. 3) Review and negotiate recurring bills like data plans, subscriptions. 4) Consider zero-based budgeting where every naira has a purpose.`;
+  //   }
+
+  //   if (lowerMessage.includes('investment') || lowerMessage.includes('invest')) {
+  //     const investmentAdvice = userFinancialData.totalInvestments < 100000 ? 
+  //       "Start small with these beginner-friendly Nigerian options: 1) Treasury Bills (minimum ₦50,000, 15-18% returns). 2) Money Market Funds (minimum ₦5,000, 12-15% returns). 3) Cowrywise or PiggyVest for automated savings. 4) Nigerian Stock Exchange ETFs for diversification." :
+  //       `With ₦${totalInvestments.toLocaleString()} invested, consider diversifying: 1) Real Estate Investment Trusts (REITs) - 12-20% returns. 2) Blue-chip Nigerian stocks (Dangote, MTN, BUA). 3) International diversification through Bamboo or Tradestation. 4) Fixed income securities for stability.`;
+      
+  //     return `${investmentAdvice} Key principles: Never invest money you can't afford to lose, diversify across asset classes, and maintain 6-12 months emergency fund before aggressive investing.`;
+  //   }
+
+  //   if (lowerMessage.includes('saving') || lowerMessage.includes('emergency')) {
+  //     const currentEmergencyFund = goals.find(g => g.title.toLowerCase().includes('emergency'))?.current || 0;
+  //     const monthlyExpenses = totalExpenses;
+  //     const recommendedEmergency = monthlyExpenses * 6;
+      
+  //     return `Your emergency fund status: ₦${currentEmergencyFund.toLocaleString()} saved. Recommended: ₦${recommendedEmergency.toLocaleString()} (6 months expenses). Strategies: 1) Automate ₦${Math.ceil(recommendedEmergency/12).toLocaleString()} monthly transfers. 2) Use high-yield savings accounts (ALAT, Kuda, VBank offer 10-15%). 3) Save windfalls like bonuses, gifts, tax refunds. 4) Start a savings challenge like ₦365 daily (₦133k yearly).`;
+  //   }
+
+  //   if (lowerMessage.includes('debt') || lowerMessage.includes('loan')) {
+  //     return `Nigerian debt management strategy: 1) List all debts with interest rates (credit cards typically 24-36%, personal loans 15-25%). 2) Pay minimums on all, extra on highest interest rate (debt avalanche). 3) Consolidate high-interest debt if possible. 4) Avoid borrowing for consumables - only for appreciating assets or income-generating activities. 5) Negotiate with creditors for payment plans. 6) Consider side income to accelerate debt payoff.`;
+  //   }
+
+  //   if (lowerMessage.includes('retirement') || lowerMessage.includes('pension')) {
+  //     return `Nigerian retirement planning: 1) Contribute to your Retirement Savings Account (RSA) - mandatory 8% minimum. 2) Make additional voluntary contributions (AVC) for tax benefits. 3) Start early - ₦10,000 monthly from age 25 becomes ₦50M+ by retirement. 4) Diversify beyond pension: stocks, real estate, business investments. 5) Consider Pension Fund Administrators (PFAs) with good track records like ARM, Leadway, or Stanbic IBTC.`;
+  //   }
+
+  //   if (lowerMessage.includes('business') || lowerMessage.includes('entrepreneurship')) {
+  //     return `Starting a business in Nigeria: 1) Validate your idea with minimum viable product (MVP). 2) Save 6-12 months operating expenses before starting. 3) Register with CAC, get TIN, open business bank account. 4) Explore funding: BOI loans, Bank of Agriculture (for agric), Tony Elumelu Foundation, grants. 5) Master cash flow management - many businesses fail due to poor cash flow, not lack of profit. 6) Consider digital businesses for lower startup costs.`;
+  //   }
+
+  //   if (lowerMessage.includes('tax') || lowerMessage.includes('firs')) {
+  //     return `Nigerian tax optimization: 1) Understand your tax bracket (7.5-24% for individuals). 2) Maximize deductions: pension contributions, life insurance premiums, donations to approved charities. 3) Keep proper records for business expenses. 4) Use tax-efficient investments like pension funds. 5) File returns on time to avoid penalties. 6) Consider professional tax advice for complex situations.`;
+  //   }
+
+  //   if (lowerMessage.includes('inflation') || lowerMessage.includes('economy')) {
+  //     return `Protecting against Nigerian inflation (currently 15-25%): 1) Invest in assets that beat inflation: stocks, real estate, foreign currency. 2) Avoid keeping large amounts in regular savings (3-5% returns vs 20% inflation). 3) Consider dollar-denominated investments through Bamboo, Tradestation. 4) Build multiple income streams. 5) Invest in your skills - education and certifications provide inflation-beating returns.`;
+  //   }
+
+  //   if (lowerMessage.includes('side') || lowerMessage.includes('income') || lowerMessage.includes('money')) {
+  //     return `Side income ideas for Nigerians: 1) Digital: Freelancing (Upwork, Fiverr), content creation, affiliate marketing, dropshipping. 2) Skills-based: Tutoring, consulting, graphic design, web development. 3) Physical: Food business, fashion, cleaning services, transportation (Uber, Bolt). 4) Passive: Rental income, dividend stocks, peer-to-peer lending. Start with your existing skills and gradually scale.`;
+  //   }
+
+  //   // Personalized insights based on user data
+  //   const personalizedInsight = `Based on your financial profile: Total Balance: ₦${totalBalance.toLocaleString()}, Savings Rate: ${userFinancialData.savingsRate.toFixed(1)}%. `;
+    
+  //   return personalizedInsight + "I can help with budgeting, investments, savings strategies, debt management, retirement planning, business finance, tax optimization, and building multiple income streams. What specific financial goal are you working towards?";
+  // };
+
+// Add this function to handle AI responses
+const generateAIResponse = async (userMessage, chatHistory = []) => {
+  try {
+    const API_KEY = 'AIzaSyC0xGhFQ3UqHYySinMPfJRzCAezUfIkVX8';
+    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+    
+    // comprehensive prompt for financial advice
+    const systemPrompt = `You are NaijaFinanceAdvisor, an expert AI Financial Advisor specializing in Nigerian financial markets and currency (₦). 
+    
+    Your expertise includes:
+    - Personal budgeting and expense management
+    - Investment strategies (stocks, bonds, mutual funds, real estate)
+    - Savings and goal planning
+    - Debt management and consolidation
+    - Nigerian banking and financial products
+    - Risk assessment and portfolio diversification
+    
+    Guidelines for interaction:
+    1. Provide practical, actionable advice with Nigerian context when relevant
+    2. Use conservative risk assessment and clear explanations
+    3. When you need specific financial information to give personalized advice, ASK the user directly
+    4. Ask for details like: monthly income, expenses, current savings, debts, financial goals, age, risk tolerance
+    5. Be conversational, helpful, and encouraging
+    6. Always remind users to consult with certified financial advisors for major decisions
+    7. Provide specific numerical examples using Nigerian Naira (₦) when possible
+    
+    Remember: If a user asks for personalized advice but hasn't shared their financial details, politely ask for the relevant information you need to help them better.`;
+    
+    //  conversation history for context
+    const conversationHistory = chatHistory.slice(-6).map(msg => 
+      `${msg.type === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
+    ).join('\n');
+    
+    const contextInfo = conversationHistory ? `\n\nPrevious conversation:\n${conversationHistory}\n` : '';
+    
+    const requestBody = {
+      contents: [{
+        parts: [{
+          text: `${systemPrompt}${contextInfo}
+          
+          Current User Message: ${userMessage}
+          
+          Please provide a helpful financial response. If you need more information to give personalized advice, ask the user for specific details.`
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 1024,
+      }
     };
 
-    // Context-aware responses based on user's actual financial data
-    if (lowerMessage.includes('budget') || lowerMessage.includes('spending')) {
-      if (userFinancialData.expenseRatio > 80) {
-        return `Based on your current spending of ₦${totalExpenses.toLocaleString()} against your ₦${budget.toLocaleString()} budget (${userFinancialData.expenseRatio.toFixed(1)}%), you're spending too much! I recommend: 1) Use the 50/30/20 rule - 50% needs, 30% wants, 20% savings. 2) Cut unnecessary expenses in your highest spending categories. 3) Consider increasing your income through side hustles like freelancing, online business, or skill monetization. 4) Track every naira spent for 30 days to identify spending leaks.`;
-      }
-      return `Your spending is at ${userFinancialData.expenseRatio.toFixed(1)}% of budget - that's manageable! To optimize: 1) Automate savings first before spending. 2) Use the envelope method for discretionary spending. 3) Review and negotiate recurring bills like data plans, subscriptions. 4) Consider zero-based budgeting where every naira has a purpose.`;
+    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    if (lowerMessage.includes('investment') || lowerMessage.includes('invest')) {
-      const investmentAdvice = userFinancialData.totalInvestments < 100000 ? 
-        "Start small with these beginner-friendly Nigerian options: 1) Treasury Bills (minimum ₦50,000, 15-18% returns). 2) Money Market Funds (minimum ₦5,000, 12-15% returns). 3) Cowrywise or PiggyVest for automated savings. 4) Nigerian Stock Exchange ETFs for diversification." :
-        `With ₦${totalInvestments.toLocaleString()} invested, consider diversifying: 1) Real Estate Investment Trusts (REITs) - 12-20% returns. 2) Blue-chip Nigerian stocks (Dangote, MTN, BUA). 3) International diversification through Bamboo or Tradestation. 4) Fixed income securities for stability.`;
-      
-      return `${investmentAdvice} Key principles: Never invest money you can't afford to lose, diversify across asset classes, and maintain 6-12 months emergency fund before aggressive investing.`;
-    }
-
-    if (lowerMessage.includes('saving') || lowerMessage.includes('emergency')) {
-      const currentEmergencyFund = goals.find(g => g.title.toLowerCase().includes('emergency'))?.current || 0;
-      const monthlyExpenses = totalExpenses;
-      const recommendedEmergency = monthlyExpenses * 6;
-      
-      return `Your emergency fund status: ₦${currentEmergencyFund.toLocaleString()} saved. Recommended: ₦${recommendedEmergency.toLocaleString()} (6 months expenses). Strategies: 1) Automate ₦${Math.ceil(recommendedEmergency/12).toLocaleString()} monthly transfers. 2) Use high-yield savings accounts (ALAT, Kuda, VBank offer 10-15%). 3) Save windfalls like bonuses, gifts, tax refunds. 4) Start a savings challenge like ₦365 daily (₦133k yearly).`;
-    }
-
-    if (lowerMessage.includes('debt') || lowerMessage.includes('loan')) {
-      return `Nigerian debt management strategy: 1) List all debts with interest rates (credit cards typically 24-36%, personal loans 15-25%). 2) Pay minimums on all, extra on highest interest rate (debt avalanche). 3) Consolidate high-interest debt if possible. 4) Avoid borrowing for consumables - only for appreciating assets or income-generating activities. 5) Negotiate with creditors for payment plans. 6) Consider side income to accelerate debt payoff.`;
-    }
-
-    if (lowerMessage.includes('retirement') || lowerMessage.includes('pension')) {
-      return `Nigerian retirement planning: 1) Contribute to your Retirement Savings Account (RSA) - mandatory 8% minimum. 2) Make additional voluntary contributions (AVC) for tax benefits. 3) Start early - ₦10,000 monthly from age 25 becomes ₦50M+ by retirement. 4) Diversify beyond pension: stocks, real estate, business investments. 5) Consider Pension Fund Administrators (PFAs) with good track records like ARM, Leadway, or Stanbic IBTC.`;
-    }
-
-    if (lowerMessage.includes('business') || lowerMessage.includes('entrepreneurship')) {
-      return `Starting a business in Nigeria: 1) Validate your idea with minimum viable product (MVP). 2) Save 6-12 months operating expenses before starting. 3) Register with CAC, get TIN, open business bank account. 4) Explore funding: BOI loans, Bank of Agriculture (for agric), Tony Elumelu Foundation, grants. 5) Master cash flow management - many businesses fail due to poor cash flow, not lack of profit. 6) Consider digital businesses for lower startup costs.`;
-    }
-
-    if (lowerMessage.includes('tax') || lowerMessage.includes('firs')) {
-      return `Nigerian tax optimization: 1) Understand your tax bracket (7.5-24% for individuals). 2) Maximize deductions: pension contributions, life insurance premiums, donations to approved charities. 3) Keep proper records for business expenses. 4) Use tax-efficient investments like pension funds. 5) File returns on time to avoid penalties. 6) Consider professional tax advice for complex situations.`;
-    }
-
-    if (lowerMessage.includes('inflation') || lowerMessage.includes('economy')) {
-      return `Protecting against Nigerian inflation (currently 15-25%): 1) Invest in assets that beat inflation: stocks, real estate, foreign currency. 2) Avoid keeping large amounts in regular savings (3-5% returns vs 20% inflation). 3) Consider dollar-denominated investments through Bamboo, Tradestation. 4) Build multiple income streams. 5) Invest in your skills - education and certifications provide inflation-beating returns.`;
-    }
-
-    if (lowerMessage.includes('side') || lowerMessage.includes('income') || lowerMessage.includes('money')) {
-      return `Side income ideas for Nigerians: 1) Digital: Freelancing (Upwork, Fiverr), content creation, affiliate marketing, dropshipping. 2) Skills-based: Tutoring, consulting, graphic design, web development. 3) Physical: Food business, fashion, cleaning services, transportation (Uber, Bolt). 4) Passive: Rental income, dividend stocks, peer-to-peer lending. Start with your existing skills and gradually scale.`;
-    }
-
-    // Personalized insights based on user data
-    const personalizedInsight = `Based on your financial profile: Total Balance: ₦${totalBalance.toLocaleString()}, Savings Rate: ${userFinancialData.savingsRate.toFixed(1)}%. `;
+    const data = await response.json();
     
-    return personalizedInsight + "I can help with budgeting, investments, savings strategies, debt management, retirement planning, business finance, tax optimization, and building multiple income streams. What specific financial goal are you working towards?";
-  };
-
-  const handleChatSubmit = () => {
-    if (!chatInput.trim()) return;
-
-    const userMessage = { type: 'user', content: chatInput };
-    const botResponse = { type: 'bot', content: getAdvancedFinancialAdvice(chatInput) };
+    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+      return data.candidates[0].content.parts[0].text;
+    } else {
+      throw new Error('Invalid response format from AI');
+    }
     
-    setChatMessages([...chatMessages, userMessage, botResponse]);
-    setChatInput('');
+  } catch (error) {
+    console.error('AI Response Error:', error);
+    return `I apologize, but I'm experiencing technical difficulties right now. Here are some general financial tips:
+
+📊 **Budget Management**: Track your income and expenses using the 50/30/20 rule - 50% needs, 30% wants, 20% savings.
+
+💰 **Emergency Fund**: Aim to save 3-6 months of expenses for unexpected situations.
+
+🎯 **Investment**: Consider diversified portfolios with Nigerian stocks, bonds, and mutual funds.
+
+💳 **Debt**: Pay off high-interest debts first, starting with credit cards.
+
+Please try asking your question again in a moment, or consult with a certified financial advisor for personalized guidance.`;
+  }
+};
+
+// Updated handleChatSubmit function
+const handleChatSubmit = async () => {
+  if (!chatInput.trim()) return;
+  
+  const userMessage = chatInput;
+  setChatInput('');
+  
+  // Add user message
+  const newUserMessage = { type: 'user', content: userMessage };
+  setChatMessages(prev => [...prev, newUserMessage]);
+  
+  // Add loading indicator
+  const loadingMessage = { 
+    type: 'bot', 
+    content: '🤔 Analyzing your question and generating personalized advice...' 
   };
+  setChatMessages(prev => [...prev, loadingMessage]);
+  
+  try {
+    // Generate AI response with conversation history for context
+    const aiResponse = await generateAIResponse(userMessage, chatMessages);
+    
+    // Replace loading message with actual response
+    setChatMessages(prev => {
+      const messages = [...prev];
+      messages[messages.length - 1] = { 
+        type: 'bot', 
+        content: aiResponse 
+      };
+      return messages;
+    });
+    
+  } catch (error) {
+    console.error('Chat error:', error);
+    // Replace loading message with error message
+    setChatMessages(prev => {
+      const messages = [...prev];
+      messages[messages.length - 1] = { 
+        type: 'bot', 
+        content: 'I apologize, but I encountered an error. Please try again or contact support if the issue persists.' 
+      };
+      return messages;
+    });
+  }
+};
+
+
+//   const handleChatSubmit = () => {
+//     if (!chatInput.trim()) return;
+
+//     const userMessage = { type: 'user', content: chatInput };
+//     const botResponse = { type: 'bot', content: getAdvancedFinancialAdvice(chatInput) };
+    
+//     setChatMessages([...chatMessages, userMessage, botResponse]);
+//     setChatInput('');
+//   };
 
   const aiRecommendations = [
     {
@@ -849,90 +985,97 @@ const Index = () => {
       </div>
 
       {/* Advanced Smart Chatbot */}
-      {showChatbot && (
-        <div className="fixed inset-0 bg-black/50 z-50 lg:bg-transparent lg:inset-auto lg:bottom-4 lg:right-4 lg:w-96">
-          <div className="absolute bottom-0 left-0 right-0 bg-white lg:relative lg:rounded-lg lg:shadow-xl lg:border border-slate-200 max-h-[90vh] lg:max-h-[600px] flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white lg:rounded-t-lg">
-              <div className="flex items-center space-x-2">
-                <Brain className="w-6 h-6 text-yellow-300" />
-                <div>
-                  <h3 className="font-bold">Grok-4o AI Finance Advisor</h3>
-                  <p className="text-xs text-blue-100">Personalized financial guidance</p>
-                </div>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setShowChatbot(false)}
-                className="p-1 h-auto text-white hover:bg-white/20"
-              >
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-0 bg-slate-50">
-              {chatMessages.length === 0 && (
-                <div className="text-center text-slate-500 text-sm space-y-4">
-                  <Brain className="w-12 h-12 mx-auto text-blue-600" />
-                  <div>
-                    <p className="font-semibold mb-2">Welcome to your AI Finance Advisor!</p>
-                    <p className="text-xs">I analyze your financial data and provide personalized advice on:</p>
-                    <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
-                      <div className="bg-white p-2 rounded border">📊 Budget Analysis</div>
-                      <div className="bg-white p-2 rounded border">💰 Investment Strategy</div>
-                      <div className="bg-white p-2 rounded border">🎯 Goal Planning</div>
-                      <div className="bg-white p-2 rounded border">💳 Debt Management</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {chatMessages.map((message, index) => (
-                <div 
-                  key={index} 
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div 
-                    className={`max-w-[85%] p-3 rounded-lg text-sm leading-relaxed ${
-                      message.type === 'user' 
-                        ? 'bg-blue-600 text-white rounded-br-none' 
-                        : 'bg-white text-slate-900 border border-slate-200 rounded-bl-none shadow-sm'
-                    }`}
-                  >
-                    {message.type === 'bot' && (
-                      <div className="flex items-center space-x-1 mb-2 text-xs text-blue-600">
-                        <Brain className="w-3 h-3" />
-                        <span className="font-semibold">AI Advisor</span>
-                      </div>
-                    )}
-                    <div className="whitespace-pre-line">{message.content}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="p-4 border-t border-slate-200 bg-white lg:rounded-b-lg">
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Ask about budgeting, investments, savings..."
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
-                  className="flex-1 border-slate-300 text-sm"
-                />
-                <Button 
-                  onClick={handleChatSubmit}
-                  className="bg-blue-600 hover:bg-blue-700 px-3"
-                  size="sm"
-                  disabled={!chatInput.trim()}
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-slate-500 mt-2 text-center">
-                💡 Ask specific questions like "How can I save ₦100,000 in 6 months?"
-              </p>
-            </div>
+{showChatbot && (
+  <div className="fixed inset-0 bg-black/50 z-50 lg:bg-transparent lg:inset-auto lg:bottom-4 lg:right-4 lg:w-96">
+    <div className="absolute bottom-0 left-0 right-0 bg-white lg:relative lg:rounded-lg lg:shadow-xl lg:border border-slate-200 max-h-[90vh] lg:max-h-[600px] flex flex-col">
+      <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white lg:rounded-t-lg">
+        <div className="flex items-center space-x-2">
+          <Brain className="w-6 h-6 text-yellow-300" />
+          <div>
+            <h3 className="font-bold">Grok-4o AI Finance Advisor</h3>
+            <p className="text-xs text-blue-100">Powered by Gemini AI • Personalized guidance</p>
           </div>
         </div>
-      )}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => setShowChatbot(false)}
+          className="p-1 h-auto text-white hover:bg-white/20"
+        >
+          <X className="w-5 h-5" />
+        </Button>
+      </div>
+      <div className="flex-1 p-4 overflow-y-auto space-y-3 min-h-0 bg-slate-50">
+        {chatMessages.length === 0 && (
+          <div className="text-center text-slate-500 text-sm space-y-4">
+            <Brain className="w-12 h-12 mx-auto text-blue-600" />
+            <div>
+              <p className="font-semibold mb-2">Welcome to your AI Finance Advisor!</p>
+              <p className="text-xs">I analyze your financial data and provide personalized advice on:</p>
+              <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                <div className="bg-white p-2 rounded border">📊 Budget Analysis</div>
+                <div className="bg-white p-2 rounded border">💰 Investment Strategy</div>
+                <div className="bg-white p-2 rounded border">🎯 Goal Planning</div>
+                <div className="bg-white p-2 rounded border">💳 Debt Management</div>
+              </div>
+              <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-xs">
+                <span className="text-green-600 font-semibold">🤖 AI-Powered:</span> 
+                <span className="text-green-700"> I'll ask for your financial details when needed to give personalized advice</span>
+              </div>
+            </div>
+          </div>
+        )}
+        {chatMessages.map((message, index) => (
+          <div 
+            key={index} 
+            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div 
+              className={`max-w-[85%] p-3 rounded-lg text-sm leading-relaxed ${
+                message.type === 'user' 
+                  ? 'bg-blue-600 text-white rounded-br-none' 
+                  : 'bg-white text-slate-900 border border-slate-200 rounded-bl-none shadow-sm'
+              }`}
+            >
+              {message.type === 'bot' && (
+                <div className="flex items-center space-x-1 mb-2 text-xs text-blue-600">
+                  <Brain className="w-3 h-3" />
+                  <span className="font-semibold">AI Advisor</span>
+                  <span className="text-slate-400">•</span>
+                  <span className="text-slate-500">Powered by Gemini</span>
+                </div>
+              )}
+              <div className="whitespace-pre-line">{message.content}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="p-4 border-t border-slate-200 bg-white lg:rounded-b-lg">
+        <div className="flex space-x-2">
+          <Input
+            placeholder="Ask about budgeting, investments, savings..."
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
+            className="flex-1 border-slate-300 text-sm"
+            disabled={chatMessages.some(msg => msg.content.includes('Analyzing your question'))}
+          />
+          <Button 
+            onClick={handleChatSubmit}
+            className="bg-blue-600 hover:bg-blue-700 px-3"
+            size="sm"
+            disabled={!chatInput.trim() || chatMessages.some(msg => msg.content.includes('Analyzing your question'))}
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+        <p className="text-xs text-slate-500 mt-2 text-center">
+          💡 Ask specific questions like "How can I save ₦100,000 in 6 months?" or "What's the best investment for my budget?"
+        </p>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Floating Chatbot Button */}
       <Button
