@@ -35,13 +35,25 @@ import {
   TrendingDown,
   MessageCircle,
   Send,
-  X
+  X,
+  User,
+  Trash2,
+  Calendar,
+  MapPin as LocationIcon
 } from 'lucide-react';
 
 const Index = () => {
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
-  const [authData, setAuthData] = useState({ email: '', password: '' });
+  const [authData, setAuthData] = useState({ 
+    firstName: '', 
+    lastName: '', 
+    age: '', 
+    phone: '', 
+    email: '', 
+    address: '', 
+    password: '' 
+  });
   const [expenses, setExpenses] = useState([
     { id: 1, amount: 5000, description: 'Groceries', category: 'Food', date: '2024-01-15' },
     { id: 2, amount: 15000, description: 'Fuel', category: 'Transport', date: '2024-01-14' },
@@ -87,12 +99,42 @@ const Index = () => {
   }, []);
 
   const handleAuth = () => {
-    if (authData.email && authData.password) {
-      setUser({ email: authData.email });
-      toast({
-        title: "Welcome!",
-        description: "Successfully logged into your financial dashboard",
-      });
+    if (isLogin) {
+      if (authData.email && authData.password) {
+        setUser({ 
+          email: authData.email,
+          firstName: authData.firstName || 'User',
+          lastName: authData.lastName || '',
+          age: authData.age,
+          phone: authData.phone,
+          address: authData.address
+        });
+        toast({
+          title: "Welcome!",
+          description: "Successfully logged into your financial dashboard",
+        });
+      }
+    } else {
+      if (authData.firstName && authData.lastName && authData.email && authData.password && authData.age && authData.phone && authData.address) {
+        setUser({ 
+          email: authData.email,
+          firstName: authData.firstName,
+          lastName: authData.lastName,
+          age: authData.age,
+          phone: authData.phone,
+          address: authData.address
+        });
+        toast({
+          title: "Account Created!",
+          description: "Welcome to AD Finance Advisor",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Please fill in all required fields",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -120,6 +162,22 @@ const Index = () => {
     toast({
       title: "Goal Added",
       description: `Target: ₦${goal.target.toLocaleString()}`,
+    });
+  };
+
+  const removeExpense = (expenseId) => {
+    setExpenses(expenses.filter(expense => expense.id !== expenseId));
+    toast({
+      title: "Expense Removed",
+      description: "Transaction has been deleted",
+    });
+  };
+
+  const removeGoal = (goalId) => {
+    setGoals(goals.filter(goal => goal.id !== goalId));
+    toast({
+      title: "Goal Removed",
+      description: "Financial goal has been deleted",
     });
   };
 
@@ -377,7 +435,7 @@ const handleChatSubmit = async () => {
                   <Building2 className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-slate-900">Naija Finance Advisor</h1>
+                  <h1 className="text-xl font-bold text-slate-900">AD Finance Advisor</h1>
                   <p className="text-xs text-slate-600">Trusted Financial Solutions</p>
                 </div>
               </div>
@@ -440,6 +498,62 @@ const handleChatSubmit = async () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {!isLogin && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-slate-700">First Name</label>
+                          <Input
+                            type="text"
+                            placeholder="First name"
+                            value={authData.firstName}
+                            onChange={(e) => setAuthData({...authData, firstName: e.target.value})}
+                            className="h-12 border-slate-300 focus:border-blue-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-slate-700">Last Name</label>
+                          <Input
+                            type="text"
+                            placeholder="Last name"
+                            value={authData.lastName}
+                            onChange={(e) => setAuthData({...authData, lastName: e.target.value})}
+                            className="h-12 border-slate-300 focus:border-blue-500"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-700">Age</label>
+                        <Input
+                          type="number"
+                          placeholder="Your age"
+                          value={authData.age}
+                          onChange={(e) => setAuthData({...authData, age: e.target.value})}
+                          className="h-12 border-slate-300 focus:border-blue-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-700">Phone Number</label>
+                        <Input
+                          type="tel"
+                          placeholder="080-xxxx-xxxx"
+                          value={authData.phone}
+                          onChange={(e) => setAuthData({...authData, phone: e.target.value})}
+                          className="h-12 border-slate-300 focus:border-blue-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-700">Home Address</label>
+                        <Input
+                          type="text"
+                          placeholder="Your address"
+                          value={authData.address}
+                          onChange={(e) => setAuthData({...authData, address: e.target.value})}
+                          className="h-12 border-slate-300 focus:border-blue-500"
+                        />
+                      </div>
+                    </>
+                  )}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Email Address</label>
                     <Input
@@ -534,7 +648,7 @@ const handleChatSubmit = async () => {
         <section className="py-16 bg-slate-50">
           <div className="container mx-auto px-6">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">Why Choose Naija Finance Advisor</h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">Why Choose AD Finance Advisor</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="text-center">
@@ -575,7 +689,7 @@ const handleChatSubmit = async () => {
               <div>
                 <div className="flex items-center space-x-2 mb-4">
                   <Building2 className="w-6 h-6" />
-                  <span className="font-bold">Naija Finance Advisor</span>
+                  <span className="font-bold">AD Finance Advisor</span>
                 </div>
                 <p className="text-slate-400 text-sm">
                   Nigeria's leading digital bank, committed to your financial success.
@@ -614,7 +728,7 @@ const handleChatSubmit = async () => {
               </div>
             </div>
             <div className="border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400">
-              <p>&copy; 2024 Naija Finance Advisor. All rights reserved. Licensed by CBN. NDIC Insured.</p>
+              <p>&copy; 2025 AD Finance Advisor. All rights reserved. Licensed by CBN. NDIC Insured.</p>
             </div>
           </div>
         </footer>
@@ -632,7 +746,7 @@ const handleChatSubmit = async () => {
                 <Building2 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900">Naija Finance Advisor</h1>
+                <h1 className="text-xl font-bold text-slate-900">AD Finance Advisor</h1>
                 <p className="text-xs text-slate-600">Personal Dashboard</p>
               </div>
             </div>
@@ -645,14 +759,25 @@ const handleChatSubmit = async () => {
                 <span className="text-slate-400">|</span>
                 <span>{user.email}</span>
               </div>
-              <Button 
-                onClick={() => setUser(null)} 
-                variant="outline" 
-                size="sm"
-                className="border-slate-300 hover:border-red-300 hover:text-red-600"
-              >
-                Logout
-              </Button>
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 bg-slate-100 rounded-lg px-3 py-2">
+                  <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="hidden sm:block">
+                    <p className="text-sm font-medium text-slate-900">{user.firstName} {user.lastName}</p>
+                    <p className="text-xs text-slate-600">{user.email}</p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => setUser(null)} 
+                  variant="outline" 
+                  size="sm"
+                  className="border-slate-300 hover:border-red-300 hover:text-red-600"
+                >
+                  Logout
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -761,18 +886,22 @@ const handleChatSubmit = async () => {
 
         {/* Responsive Main Banking Tabs */}
         <Tabs defaultValue="expenses" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-white border border-slate-200 h-auto p-1">
-            <TabsTrigger value="expenses" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white font-medium text-xs lg:text-sm py-2 lg:py-3">
-              Transactions
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-white border border-slate-200 h-auto p-1 rounded-xl shadow-sm">
+            <TabsTrigger value="expenses" className="data-[state=active]:bg-primary data-[state=active]:text-white font-medium text-xs lg:text-sm py-3 lg:py-4 rounded-lg transition-all duration-200 hover:bg-slate-100 flex items-center gap-2">
+              <CreditCard className="w-4 h-4" />
+              <span className="hidden sm:inline">Transactions</span>
             </TabsTrigger>
-            <TabsTrigger value="budget" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white font-medium text-xs lg:text-sm py-2 lg:py-3">
-              Budget Planning
+            <TabsTrigger value="budget" className="data-[state=active]:bg-primary data-[state=active]:text-white font-medium text-xs lg:text-sm py-3 lg:py-4 rounded-lg transition-all duration-200 hover:bg-slate-100 flex items-center gap-2">
+              <Wallet className="w-4 h-4" />
+              <span className="hidden sm:inline">Budget</span>
             </TabsTrigger>
-            <TabsTrigger value="investments" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white font-medium text-xs lg:text-sm py-2 lg:py-3">
-              Investments
+            <TabsTrigger value="investments" className="data-[state=active]:bg-primary data-[state=active]:text-white font-medium text-xs lg:text-sm py-3 lg:py-4 rounded-lg transition-all duration-200 hover:bg-slate-100 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              <span className="hidden sm:inline">Investments</span>
             </TabsTrigger>
-            <TabsTrigger value="goals" className="data-[state=active]:bg-slate-900 data-[state=active]:text-white font-medium text-xs lg:text-sm py-2 lg:py-3">
-              Financial Goals
+            <TabsTrigger value="goals" className="data-[state=active]:bg-primary data-[state=active]:text-white font-medium text-xs lg:text-sm py-3 lg:py-4 rounded-lg transition-all duration-200 hover:bg-slate-100 flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              <span className="hidden sm:inline">Goals</span>
             </TabsTrigger>
           </TabsList>
 
@@ -793,7 +922,7 @@ const handleChatSubmit = async () => {
                     <option>Other</option>
                   </select>
                   <Button 
-                    className="bg-slate-900 hover:bg-slate-800 w-full lg:w-auto"
+                    className="bg-primary hover:bg-primary/90 w-full lg:w-auto rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200"
                     onClick={() => {
                       const amountInput = document.getElementById('expense-amount') as HTMLInputElement;
                       const descriptionInput = document.getElementById('expense-description') as HTMLInputElement;
@@ -816,7 +945,7 @@ const handleChatSubmit = async () => {
                 </div>
                 <div className="space-y-3">
                   {expenses.map((expense) => (
-                    <div key={expense.id} className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border border-slate-200 rounded-lg bg-white space-y-2 lg:space-y-0">
+                    <div key={expense.id} className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border border-slate-200 rounded-lg bg-white space-y-2 lg:space-y-0 hover:shadow-md transition-shadow duration-200">
                       <div className="flex items-center space-x-3">
                         {getCategoryIcon(expense.category)}
                         <div>
@@ -824,7 +953,17 @@ const handleChatSubmit = async () => {
                           <p className="text-sm text-slate-500">{expense.category} • {expense.date}</p>
                         </div>
                       </div>
-                      <p className="font-semibold text-red-600 text-right lg:text-left">-₦{expense.amount.toLocaleString()}</p>
+                      <div className="flex items-center space-x-3">
+                        <p className="font-semibold text-red-600">-₦{expense.amount.toLocaleString()}</p>
+                        <Button 
+                          onClick={() => removeExpense(expense.id)}
+                          variant="outline"
+                          size="sm"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -847,7 +986,10 @@ const handleChatSubmit = async () => {
                     onChange={(e) => setBudget(Number(e.target.value))}
                     className="border-slate-300 flex-1"
                   />
-                  <Button className="bg-slate-900 hover:bg-slate-800 w-full lg:w-auto">Update Budget</Button>
+                  <Button className="bg-primary hover:bg-primary/90 w-full lg:w-auto rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200">
+                    <Wallet className="w-4 h-4 mr-2" />
+                    Update Budget
+                  </Button>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-between">
@@ -886,7 +1028,7 @@ const handleChatSubmit = async () => {
                   </select>
                   <Input type="number" placeholder="Amount (₦)" className="border-slate-300" id="investment-amount" />
                   <Button 
-                    className="bg-green-600 hover:bg-green-700 w-full lg:w-auto"
+                    className="bg-green-600 hover:bg-green-700 w-full lg:w-auto rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200"
                     onClick={() => {
                       const typeSelect = document.getElementById('investment-type') as HTMLSelectElement;
                       const amountInput = document.getElementById('investment-amount') as HTMLInputElement;
@@ -901,6 +1043,7 @@ const handleChatSubmit = async () => {
                       }
                     }}
                   >
+                    <TrendingUp className="w-4 h-4 mr-2" />
                     Add Investment
                   </Button>
                 </div>
@@ -934,7 +1077,7 @@ const handleChatSubmit = async () => {
                   <Input type="number" placeholder="Target Amount (₦)" className="border-slate-300" id="goal-target" />
                   <Input type="number" placeholder="Current Amount (₦)" className="border-slate-300" id="goal-current" />
                   <Button 
-                    className="bg-blue-600 hover:bg-blue-700 w-full lg:w-auto"
+                    className="bg-blue-600 hover:bg-blue-700 w-full lg:w-auto rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200"
                     onClick={() => {
                       const titleInput = document.getElementById('goal-title') as HTMLInputElement;
                       const targetInput = document.getElementById('goal-target') as HTMLInputElement;
@@ -953,17 +1096,28 @@ const handleChatSubmit = async () => {
                       }
                     }}
                   >
+                    <Target className="w-4 h-4 mr-2" />
                     Add Goal
                   </Button>
                 </div>
                 <div className="space-y-4">
                   {goals.map((goal) => (
-                    <div key={goal.id} className="p-4 border border-slate-200 rounded-lg bg-white">
+                    <div key={goal.id} className="p-4 border border-slate-200 rounded-lg bg-white hover:shadow-md transition-shadow duration-200">
                       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-2 space-y-2 lg:space-y-0">
                         <h3 className="font-semibold text-slate-900">{goal.title}</h3>
-                        <Badge variant={goal.priority === 'High' ? 'destructive' : 'secondary'}>
-                          {goal.priority}
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={goal.priority === 'High' ? 'destructive' : 'secondary'}>
+                            {goal.priority}
+                          </Badge>
+                          <Button 
+                            onClick={() => removeGoal(goal.id)}
+                            variant="outline"
+                            size="sm"
+                            className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
