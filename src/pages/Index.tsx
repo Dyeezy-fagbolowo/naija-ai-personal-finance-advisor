@@ -145,6 +145,7 @@ const Index = () => {
       title: "Expense Added",
       description: `₦${expense.amount.toLocaleString()} for ${expense.description}`,
     });
+    setTimeout(() => generateAIComment('transaction', expense), 1000);
   };
 
   const addInvestment = (newInvestment) => {
@@ -154,6 +155,7 @@ const Index = () => {
       title: "Investment Added",
       description: `₦${investment.amount.toLocaleString()} in ${investment.type}`,
     });
+    setTimeout(() => generateAIComment('investment', investment), 1000);
   };
 
   const addGoal = (newGoal) => {
@@ -163,6 +165,7 @@ const Index = () => {
       title: "Goal Added",
       description: `Target: ₦${goal.target.toLocaleString()}`,
     });
+    setTimeout(() => generateAIComment('goal', goal), 1000);
   };
 
   const removeExpense = (expenseId) => {
@@ -178,6 +181,44 @@ const Index = () => {
     toast({
       title: "Goal Removed",
       description: "Financial goal has been deleted",
+    });
+  };
+
+  const removeInvestment = (investmentId) => {
+    setInvestments(investments.filter(investment => investment.id !== investmentId));
+    toast({
+      title: "Investment Removed",
+      description: "Investment has been deleted",
+    });
+  };
+
+  const generateAIComment = (type, data) => {
+    const comments = {
+      transaction: [
+        `Smart spending! Keep tracking your expenses to stay within budget.`,
+        `Good job logging this expense. Consider if this aligns with your financial goals.`,
+        `Every naira counts! This expense tracking will help you make better financial decisions.`,
+        `Nice! Consistent expense tracking is key to financial success.`
+      ],
+      goal: [
+        `Excellent goal setting! Break it down into smaller milestones for better success.`,
+        `Great financial goal! Regular contributions will help you achieve this faster.`,
+        `Smart planning! This goal will improve your financial future significantly.`,
+        `Well done! Having clear financial targets keeps you motivated and focused.`
+      ],
+      investment: [
+        `Great investment choice! Diversification is key to building wealth.`,
+        `Smart move! This investment aligns well with your financial portfolio.`,
+        `Excellent! Regular investing is the path to long-term financial success.`,
+        `Well done! This investment will help grow your wealth over time.`
+      ]
+    };
+    
+    const randomComment = comments[type][Math.floor(Math.random() * comments[type].length)];
+    
+    toast({
+      title: "💡 AI Financial Tip",
+      description: randomComment,
     });
   };
 
@@ -1047,20 +1088,30 @@ const handleChatSubmit = async () => {
                     Add Investment
                   </Button>
                 </div>
-                <div className="space-y-3">
-                  {investments.map((investment) => (
-                    <div key={investment.id} className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border border-slate-200 rounded-lg bg-white space-y-2 lg:space-y-0">
-                      <div>
-                        <p className="font-medium text-slate-900">{investment.type}</p>
-                        <p className="text-sm text-slate-500">₦{investment.amount.toLocaleString()}</p>
-                      </div>
-                      <div className="text-left lg:text-right">
-                        <p className="font-semibold text-green-600">+{investment.returns.toFixed(1)}%</p>
-                        <p className="text-sm text-slate-500">Returns</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                 <div className="space-y-3">
+                   {investments.map((investment) => (
+                     <div key={investment.id} className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border border-slate-200 rounded-lg bg-white space-y-2 lg:space-y-0 hover:shadow-md transition-shadow duration-200">
+                       <div>
+                         <p className="font-medium text-slate-900">{investment.type}</p>
+                         <p className="text-sm text-slate-500">₦{investment.amount.toLocaleString()}</p>
+                       </div>
+                       <div className="flex items-center space-x-3">
+                         <div className="text-left lg:text-right">
+                           <p className="font-semibold text-green-600">+{investment.returns.toFixed(1)}%</p>
+                           <p className="text-sm text-slate-500">Returns</p>
+                         </div>
+                         <Button 
+                           onClick={() => removeInvestment(investment.id)}
+                           variant="outline"
+                           size="sm"
+                           className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                         >
+                           <Trash2 className="w-4 h-4" />
+                         </Button>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -1146,8 +1197,10 @@ const handleChatSubmit = async () => {
         <div className="flex items-center space-x-2">
           <Brain className="w-6 h-6 text-yellow-300" />
           <div>
-            <h3 className="font-bold">Grok-4o AI Finance Advisor</h3>
-            <p className="text-xs text-blue-100">Powered by Gemini AI • Personalized guidance</p>
+            <div className="flex items-center space-x-2">
+              <Brain className="w-5 h-5" />
+              <span className="text-xs text-blue-100">• Personalized guidance</span>
+            </div>
           </div>
         </div>
         <Button 
@@ -1192,12 +1245,10 @@ const handleChatSubmit = async () => {
               }`}
             >
               {message.type === 'bot' && (
-                <div className="flex items-center space-x-1 mb-2 text-xs text-blue-600">
-                  <Brain className="w-3 h-3" />
-                  <span className="font-semibold">AI Advisor</span>
-                  <span className="text-slate-400">•</span>
-                  <span className="text-slate-500">Powered by Gemini</span>
-                </div>
+                 <div className="flex items-center space-x-1 mb-2 text-xs text-blue-600">
+                   <Brain className="w-3 h-3" />
+                   <span className="font-semibold">AI Advisor</span>
+                 </div>
               )}
               <div className="whitespace-pre-line">{message.content}</div>
             </div>
